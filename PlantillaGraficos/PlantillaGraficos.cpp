@@ -24,6 +24,11 @@ float posXCuadrado = 0.5f, posYCuadrado = 0.5f;
 double tiempoActual, tiempoAnterior;
 double velocidadTriangulo = 0.8;
 
+//glColor3f(0.2, 0.6, 0.1);
+float rojoTriangulo = 0.2f;
+float verdeTriangulo = 0.6f;
+float azulTriangulo = 0.1f;
+
 void teclado_callback(GLFWwindow* window,
 	int key, int scancode, int action, int mods) {
 
@@ -55,8 +60,39 @@ void teclado_callback(GLFWwindow* window,
 
 }
 
+void checarColisiones() {
+
+	if (
+		//Orilla derecha del triangulo es mayor que
+		//la orilla izquierda del cuadrado
+		posXTriangulo + 0.15f >= posXCuadrado - 0.15f &&
+		//Orilla izquierda del triangulo es menor que
+		//la orilla derecha del cuadrado
+		posXTriangulo - 0.15f <= posXCuadrado + 0.15f &&
+		//Orilla superior triangulo mayor que
+		//la orilla inferior del cuadrado
+		posYTriangulo + 0.15f >= posYCuadrado - 0.15f &&
+		//Orilla inferior triangulo menor que
+		//la orilla superior del cuadrado
+		posYTriangulo - 0.15f <= posYCuadrado + 0.15f
+		) {
+		rojoTriangulo = 0.0f;
+		verdeTriangulo = 0.0f;
+		azulTriangulo = 0.0f;
+		exit(1);
+	}
+	else {
+		rojoTriangulo = 0.2f;
+		verdeTriangulo = 0.6f;
+		azulTriangulo = 0.1f;
+	}
+}
+
 void actualizar() {
 	tiempoActual = glfwGetTime();
+
+	checarColisiones();
+
 	double tiempoDiferencial = 
 		tiempoActual - tiempoAnterior;
 	int estadoDerecha =
@@ -90,7 +126,7 @@ void dibujarTriangulo() {
 
 	glBegin(GL_TRIANGLES);
 
-	glColor3f(0.2, 0.6, 0.1);
+	glColor3f(rojoTriangulo, verdeTriangulo, azulTriangulo);
 	glVertex3f(0.0f, 0.15f, 0.0f);
 	glVertex3f(-0.15f, -0.15f, 0.0f);
 	glVertex3f(0.15f, -0.15f, 0.0f);
@@ -117,8 +153,9 @@ void dibujarCuadrado() {
 }
 
 void dibujar() {
-	dibujarTriangulo();
 	dibujarCuadrado();
+	dibujarTriangulo();
+	
 
 	
 }
